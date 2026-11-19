@@ -1,0 +1,97 @@
+{
+  "mode": "mock",
+  "test_type": "smoke",
+  "requests_per_case": 10,
+  "concurrency": 1,
+  "concurrency_levels": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "rps_limit": 1,
+  "timeout_s": 30,
+  "warmup": 0,
+  "soak_seconds": 30,
+  "cases": [
+    {
+      "name": "gemma4-26b",
+      "kind": "llm",
+      "enabled": true,
+      "url": "http://127.0.0.1:4004/v1/chat/completions",
+      "method": "POST",
+      "payload": {
+        "messages": [
+          {
+            "role": "system",
+            "content": "Synthetic test only. Reply OK."
+          },
+          {
+            "role": "user",
+            "content": "Reply OK."
+          }
+        ],
+        "max_tokens": 32,
+        "temperature": 0
+      },
+      "headers": {},
+      "token_env": "LLM_GATEWAY_TOKEN",
+      "expected_status": [
+        200
+      ],
+      "expected_json_path": "",
+      "expected_value": null,
+      "model": "gemma4:26b",
+      "model_env": "",
+      "stream": false,
+      "mcp_version": "2025-11-25",
+      "mcp_tool": "",
+      "mcp_expected_tool": "",
+      "mcp_tool_args": {}
+    },
+    {
+      "name": "home-mcp-discovery",
+      "kind": "mcp",
+      "enabled": true,
+      "url": "http://127.0.0.1:9135/mcp",
+      "method": "POST",
+      "payload": {},
+      "headers": {},
+      "token_env": "",
+      "expected_status": [
+        200
+      ],
+      "expected_json_path": "",
+      "expected_value": null,
+      "model": "mock-model",
+      "model_env": "",
+      "stream": false,
+      "mcp_version": "2025-11-25",
+      "mcp_tool": "",
+      "mcp_expected_tool": "",
+      "mcp_tool_args": {}
+    },
+    {
+      "name": "cipher-web-health",
+      "kind": "api",
+      "enabled": true,
+      "url": "http://127.0.0.1:9101/",
+      "method": "GET",
+      "payload": null,
+      "headers": {},
+      "token_env": "",
+      "expected_status": [
+        200
+      ],
+      "expected_json_path": "",
+      "expected_value": null,
+      "model": "mock-model",
+      "model_env": "",
+      "stream": false,
+      "mcp_version": "2025-11-25",
+      "mcp_tool": "",
+      "mcp_expected_tool": "",
+      "mcp_tool_args": {}
+    }
+  ]
+}

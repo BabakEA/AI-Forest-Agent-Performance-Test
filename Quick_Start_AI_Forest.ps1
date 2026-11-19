@@ -1,0 +1,17 @@
+# AI Forest Toolkit v0.4 — safe Windows CLI hints (nothing runs live automatically)
+Write-Host 'AI Forest performance toolkit — version 0.4' -ForegroundColor Cyan
+Write-Host 'Install dependencies and run automated tests:'
+Write-Host '  python -m pip install -r requirements-test.txt'
+Write-Host '  python -m pytest -q'
+Write-Host 'To open the Streamlit dashboard:'
+Write-Host '  python -m pip install -r requirements-dashboard.txt'
+Write-Host '  python -m streamlit run dashboard.py'
+Write-Host 'Three AI Forest profiles:'
+Write-Host '  examples/ai_forest_01_gateway_chat.json'
+Write-Host '  examples/ai_forest_02_memory_home_media_audio_mcps.json'
+Write-Host '  examples/ai_forest_03_capacity_forecast.json'
+Write-Warning 'Inspect URLs/protocol/model, configure environment tokens, then explicitly approve any live test.'
+Write-Host 'Gateway example: python -m agent_perf benchmark --config examples/ai_forest_01_gateway_chat.json --ack-live --out results/gateway'
+Write-Host 'MCP example:     python -m agent_perf benchmark --config examples/ai_forest_02_memory_home_media_audio_mcps.json --ack-live --out results/mcps'
+Write-Host 'Forecast:        python -m agent_perf forecast --config examples/ai_forest_03_capacity_forecast.json --out results/forecast'
+Write-Host 'Read AI_FOREST_SETUP_GUIDE.md before testing.'

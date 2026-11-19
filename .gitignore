@@ -1,0 +1,16 @@
+# Never publish credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+# Generated test results may reveal endpoint names/payload sizes
+results/
+__pycache__/
+.pytest_cache/
+*.pyc
+# Python distribution artifacts
+build/
+dist/
+*.egg-info/
+.venv/

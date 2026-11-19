@@ -1,0 +1,76 @@
+{
+  "mode": "live",
+  "test_type": "smoke",
+  "requests_per_case": 3,
+  "concurrency": 1,
+  "concurrency_levels": [
+    1
+  ],
+  "rps_limit": 0.5,
+  "timeout_s": 30,
+  "warmup": 0,
+  "soak_seconds": 10,
+  "cases": [
+    {
+      "name": "home-mcp-9135-tools-list",
+      "kind": "mcp",
+      "url": "http://127.0.0.1:9135/mcp",
+      "mcp_version": "2025-11-25",
+      "token_env": "AI_FOREST_MCP_TOKEN",
+      "expected_status": [
+        200
+      ]
+    },
+    {
+      "name": "media-mcp-9136-tools-list",
+      "kind": "mcp",
+      "url": "http://127.0.0.1:9136/mcp",
+      "mcp_version": "2025-11-25",
+      "token_env": "AI_FOREST_MCP_TOKEN",
+      "expected_status": [
+        200
+      ]
+    },
+    {
+      "name": "audio-mcp-9137-tools-list",
+      "kind": "mcp",
+      "url": "http://127.0.0.1:9137/mcp",
+      "mcp_version": "2025-11-25",
+      "token_env": "AI_FOREST_MCP_TOKEN",
+      "expected_status": [
+        200
+      ]
+    },
+    {
+      "name": "redis-memory-mcp-tools-list-configure-url",
+      "kind": "mcp",
+      "enabled": false,
+      "url": "http://127.0.0.1:REPLACE_REDIS_MCP_PORT/mcp",
+      "mcp_version": "2025-11-25",
+      "token_env": "REDIS_MEMORY_MCP_TOKEN",
+      "expected_status": [
+        200
+      ]
+    },
+    {
+      "name": "redis-memory-mcp-read-only-tool-after-discovery",
+      "kind": "mcp",
+      "enabled": false,
+      "url": "http://127.0.0.1:REPLACE_REDIS_MCP_PORT/mcp",
+      "mcp_version": "2025-11-25",
+      "token_env": "REDIS_MEMORY_MCP_TOKEN",
+      "mcp_tool": "REPLACE_WITH_READ_ONLY_TOOL_NAME",
+      "mcp_tool_args": {
+        "key": "agent_perf_synthetic_key"
+      }
+    },
+    {
+      "name": "cipher-api-optional",
+      "kind": "api",
+      "enabled": false,
+      "url": "http://127.0.0.1:9102/api/status",
+      "method": "GET",
+      "token_env": "CIPHER_API_TOKEN"
+    }
+  ]
+}

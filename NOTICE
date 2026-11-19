@@ -1,0 +1,17 @@
+AFPerf — AI Forest Agent Performance & Capacity Toolkit
+AI Forest Agent Performance Test (AFPerf)
+Copyright 2026 AI Forest Inc.
+Contact: emami.babak@gmail.com
+
+Licensed under the Apache License, Version 2.0.
+
+
+This product's original code is licensed under the Apache License, Version 2.0.
+See the LICENSE file for the complete terms.
+
+AI Forest, AFPerf, and associated names and logos are brand identifiers.
+The Apache-2.0 license does not grant trademark rights.
+
+Third-party dependencies retain their respective licenses and attribution
+requirements. See DEPENDENCIES_AND_LICENSES.md for informational inventory;
+verify transitive dependencies and bundled assets before redistribution.

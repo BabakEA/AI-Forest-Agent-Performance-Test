@@ -1,0 +1,15 @@
+{
+  "mode":"live",
+  "test_type":"smoke",
+  "requests_per_case":5,
+  "concurrency":1,
+  "concurrency_levels":[1],
+  "rps_limit":1,
+  "timeout_s":15,
+  "warmup":0,
+  "cases":[
+    {"name":"github-tool-discovery","kind":"mcp","url":"http://127.0.0.1:9053/mcp","token_env":"MCP_TOKEN","mcp_version":"2025-11-25"},
+    {"name":"read-only-api","kind":"api","url":"http://127.0.0.1:9102/api/status","method":"GET","token_env":"API_TOKEN","expected_status":[200]},
+    {"name":"llm-gateway","kind":"llm","url":"http://127.0.0.1:4004/v1/chat/completions","token_env":"LLM_TOKEN","model":"REPLACE_WITH_DEPLOYED_MODEL","payload":{"messages":[{"role":"user","content":"Say OK."}],"max_tokens":8}}
+  ]
+}

@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "afperf"
+version = "0.7.0"
+description = "MCP, API, agent and LLM HTTP performance testing plus K8s capacity forecasting"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+keywords = ["mcp", "llm", "ai-agents", "load-testing", "kubernetes", "performance"]
+classifiers = ["Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only", "Operating System :: OS Independent", "Topic :: Software Development :: Testing"]
+requires-python = ">=3.10"
+dependencies = ["httpx>=0.27", "matplotlib>=3.8", "PyYAML>=6.0", "plotly>=5.0", "python-dotenv>=1.0", "streamlit>=1.40"]
+
+[project.urls]
+Homepage = "https://github.com/BabakEA/AI-Forest-Agent-Performance-Test"
+Repository = "https://github.com/BabakEA/AI-Forest-Agent-Performance-Test"
+Issues = "https://github.com/BabakEA/AI-Forest-Agent-Performance-Test/issues"
+
+[project.optional-dependencies]
+dashboard = []
+test = ["pytest>=8.0"]
+browser = ["playwright>=1.50"]
+
+[project.scripts]
+agent-perf = "agent_perf.cli:main"
+afperf = "agent_perf.afperf_cli:main"
+aiforest-perf = "agent_perf.afperf_cli:main"
+agent-performance-test = "agent_perf.afperf_cli:main"
+
+[tool.setuptools.packages.find]
+include = ["agent_perf*"]
+
+[tool.setuptools.package-data]
+agent_perf = ["ui/*.py", "templates/examples/*.json", "templates/*.md", "templates/*.txt"]

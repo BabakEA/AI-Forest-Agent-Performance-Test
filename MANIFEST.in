@@ -1,0 +1,8 @@
+include README.md CHANGELOG.md WHITE_PAPER.md RELEASING.md LICENSE NOTICE LICENSING.md DEPENDENCIES_AND_LICENSES.md
+recursive-include agent_perf/templates *.json *.txt *.md
+recursive-include scripts *.sh
+recursive-include tools *.py
+recursive-include tests *.py
+global-exclude *.pyc *.pyo .env *.pem *.key
+prune build
+prune dist

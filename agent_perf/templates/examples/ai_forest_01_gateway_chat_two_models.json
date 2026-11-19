@@ -1,0 +1,154 @@
+{
+  "mode": "live",
+  "test_type": "smoke",
+  "requests_per_case": 3,
+  "concurrency": 1,
+  "concurrency_levels": [
+    1
+  ],
+  "rps_limit": 0.5,
+  "timeout_s": 30,
+  "warmup": 0,
+  "soak_seconds": 10,
+  "cases": [
+    {
+      "name": "gemma4-26b-non-streaming",
+      "kind": "llm",
+      "url": "http://127.0.0.1:4004/v1/chat/completions",
+      "token_env": "LLM_GATEWAY_TOKEN",
+      "model": "gemma4:26b",
+      "stream": false,
+      "payload": {
+        "messages": [
+          {
+            "role": "system",
+            "content": "This is a synthetic performance test. Return only the exact word OK."
+          },
+          {
+            "role": "user",
+            "content": "Respond with OK."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 16
+      },
+      "expected_status": [
+        200
+      ]
+    },
+    {
+      "name": "gemma4-26b-streaming-ttft",
+      "kind": "llm",
+      "url": "http://127.0.0.1:4004/v1/chat/completions",
+      "token_env": "LLM_GATEWAY_TOKEN",
+      "model": "gemma4:26b",
+      "stream": true,
+      "payload": {
+        "messages": [
+          {
+            "role": "system",
+            "content": "This is a synthetic performance test. Return only the exact word OK."
+          },
+          {
+            "role": "user",
+            "content": "Respond with OK."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 16,
+        "stream_options": {
+          "include_usage": true
+        }
+      },
+      "expected_status": [
+        200
+      ]
+    },
+    {
+      "name": "gpt-luna-fast-non-streaming",
+      "kind": "llm",
+      "url": "http://127.0.0.1:4004/v1/chat/completions",
+      "token_env": "LLM_GATEWAY_TOKEN",
+      "model": "gpt-luna-fast",
+      "stream": false,
+      "payload": {
+        "messages": [
+          {
+            "role": "system",
+            "content": "This is a synthetic performance test. Return only the exact word OK."
+          },
+          {
+            "role": "user",
+            "content": "Respond with OK."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 16
+      },
+      "expected_status": [
+        200
+      ]
+    },
+    {
+      "name": "gpt-luna-fast-streaming-ttft",
+      "kind": "llm",
+      "url": "http://127.0.0.1:4004/v1/chat/completions",
+      "token_env": "LLM_GATEWAY_TOKEN",
+      "model": "gpt-luna-fast",
+      "stream": true,
+      "payload": {
+        "messages": [
+          {
+            "role": "system",
+            "content": "This is a synthetic performance test. Return only the exact word OK."
+          },
+          {
+            "role": "user",
+            "content": "Respond with OK."
+          }
+        ],
+        "temperature": 0,
+        "max_tokens": 16,
+        "stream_options": {
+          "include_usage": true
+        }
+      },
+      "expected_status": [
+        200
+      ]
+    },
+    {
+      "name": "cipher-status",
+      "kind": "api",
+      "url": "http://127.0.0.1:9102/api/status",
+      "method": "GET",
+      "token_env": "CIPHER_API_TOKEN",
+      "expected_status": [
+        200
+      ]
+    },
+    {
+      "name": "cipher-web-ui-health",
+      "kind": "api",
+      "url": "http://127.0.0.1:9101/",
+      "method": "GET",
+      "expected_status": [
+        200
+      ]
+    },
+    {
+      "name": "cipher-agent-chat-verify-route-first",
+      "kind": "agent",
+      "enabled": false,
+      "url": "http://127.0.0.1:9102/agent",
+      "method": "POST",
+      "token_env": "CIPHER_API_TOKEN",
+      "payload": {
+        "query": "Synthetic health check: reply OK. No memory writes."
+      },
+      "expected_status": [
+        200
+      ]
+    }
+  ]
+}

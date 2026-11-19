@@ -1,0 +1,70 @@
+{
+  "mode": "mock",
+  "test_type": "ramp",
+  "requests_per_case": 10,
+  "concurrency": 4,
+  "concurrency_levels": [
+    1,
+    2,
+    4
+  ],
+  "rps_limit": 0,
+  "timeout_s": 20,
+  "warmup": 1,
+  "soak_seconds": 30,
+  "cases": [
+    {
+      "name": "github-mcp-list",
+      "kind": "mcp",
+      "url": "http://127.0.0.1:9053/mcp",
+      "mcp_version": "2025-11-25"
+    },
+    {
+      "name": "github-mcp-read",
+      "kind": "mcp",
+      "url": "http://127.0.0.1:9053/mcp",
+      "mcp_tool": "get_file_contents",
+      "mcp_tool_args": {
+        "path": "README.md"
+      }
+    },
+    {
+      "name": "api-echo",
+      "kind": "api",
+      "url": "http://127.0.0.1:9102/api/status",
+      "method": "POST",
+      "payload": {
+        "test": "benchmark"
+      },
+      "expected_json_path": "status",
+      "expected_value": "ok"
+    },
+    {
+      "name": "agent-execute",
+      "kind": "agent",
+      "url": "http://127.0.0.1:9102/agent",
+      "method": "POST",
+      "payload": {
+        "query": "Answer from approved data"
+      },
+      "expected_json_path": "status",
+      "expected_value": "completed"
+    },
+    {
+      "name": "llm-gateway",
+      "kind": "llm",
+      "url": "http://127.0.0.1:4004/v1/chat/completions",
+      "model": "mock-model",
+      "stream": true,
+      "payload": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply OK."
+          }
+        ],
+        "max_tokens": 12
+      }
+    }
+  ]
+}

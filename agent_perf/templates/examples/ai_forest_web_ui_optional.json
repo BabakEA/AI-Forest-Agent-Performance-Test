@@ -1,0 +1,12 @@
+{
+  "ui_url": "http://127.0.0.1:9101/",
+  "input_selector": "REPLACE_WITH_CHAT_INPUT_CSS_SELECTOR",
+  "send_button_selector": "REPLACE_WITH_SEND_BUTTON_CSS_SELECTOR",
+  "assistant_message_selector": "REPLACE_WITH_ASSISTANT_MESSAGE_CSS_SELECTOR",
+  "new_chat_selector": "",
+  "headless": false,
+  "timeout_ms": 60000,
+  "memory_test": false,
+  "test_prompt": "Reply with the exact text AI_FOREST_WEB_TEST_OK. Do not store this request in long-term memory.",
+  "expected_text": "AI_FOREST_WEB_TEST_OK"
+}
