@@ -1,0 +1,78 @@
+name: Publish AFPerf GitHub Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  github-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate version, archives, and checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+          FOLDER="release-assets/${TAG}"
+          NOTES="releases/${TAG}.md"
+          test -f "$NOTES"
+          test -f "$FOLDER/afperf-${VERSION}-py3-none-any.whl"
+          test -f "$FOLDER/afperf-${VERSION}.tar.gz"
+          test -f "$FOLDER/SHA256SUMS.txt"
+          sha256sum -c "$FOLDER/SHA256SUMS.txt"
+          python - <<'PY'
+          import os, pathlib, tarfile, tomllib, zipfile
+          tag = os.environ['GITHUB_REF_NAME']
+          version = tag.removeprefix('v')
+          with open('pyproject.toml', 'rb') as f:
+              meta = tomllib.load(f)['project']
+          assert meta['name'] == 'afperf', meta['name']
+          assert meta['version'] == version, (meta['version'], version)
+          folder = pathlib.Path('release-assets') / tag
+          wheel = folder / f'afperf-{version}-py3-none-any.whl'
+          sdist = folder / f'afperf-{version}.tar.gz'
+          with zipfile.ZipFile(wheel) as z:
+              metadata = [n for n in z.namelist() if n.endswith('.dist-info/METADATA')]
+              assert len(metadata) == 1
+              text = z.read(metadata[0]).decode('utf-8')
+              assert 'Name: afperf\n' in text
+              assert f'Version: {version}\n' in text
+          with tarfile.open(sdist, 'r:gz') as t:
+              assert any(x.name.endswith('/PKG-INFO') for x in t.getmembers())
+          print('AFPerf release assets validated:', tag)
+          PY
+
+      - name: Create GitHub Release and attach wheel / sdist
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+          FOLDER="release-assets/${TAG}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; not replacing existing assets."
+            exit 0
+          fi
+          gh release create "$TAG" \
+            "$FOLDER/afperf-${VERSION}-py3-none-any.whl" \
+            "$FOLDER/afperf-${VERSION}.tar.gz" \
+            "$FOLDER/SHA256SUMS.txt" \
+            --verify-tag \
+            --title "AFPerf ${TAG} — AI Forest Performance Toolkit" \
+            --notes-file "releases/${TAG}.md" \
+            --prerelease
