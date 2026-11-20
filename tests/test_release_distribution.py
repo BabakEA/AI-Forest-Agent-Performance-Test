@@ -3,7 +3,12 @@ from __future__ import annotations
 from pathlib import Path
 import subprocess
 import sys
-import tomllib
+
+try:
+    import tomllib  # Python 3.11+
+except ModuleNotFoundError:
+    import tomli as tomllib  # Python 3.10; declared in the test extra
+
 from agent_perf import __version__
 
 ROOT=Path(__file__).resolve().parents[1]

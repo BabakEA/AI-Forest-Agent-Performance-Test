@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 name: Publish AFPerf GitHub Release
+=======
+# Release publication is intentionally controlled by scripts/release.sh --publish.
+# That script creates a draft GitHub release, uploads to PyPI, then publishes it.
+# This tag workflow only validates/builds source; it does NOT publish another release.
+name: Validate AFPerf release tag and distributions
+>>>>>>> 77d3829 (fix: Python 3.10 CI compatibility and safe release validation)
 
 on:
   push:
@@ -6,6 +13,7 @@ on:
       - 'v*'
 
 permissions:
+<<<<<<< HEAD
   contents: write
 
 jobs:
@@ -76,3 +84,89 @@ jobs:
             --title "AFPerf ${TAG} — AI Forest Performance Toolkit" \
             --notes-file "releases/${TAG}.md" \
             --prerelease
+=======
+  contents: read
+
+jobs:
+  validate-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Validate release tag matches pyproject.toml
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, pathlib, re, tomllib
+          tag = os.environ['RELEASE_TAG']
+          if not re.fullmatch(r'v\d+\.\d+\.\d+(?:(?:a|b|rc)\d+)?', tag):
+              raise SystemExit(f'Invalid release tag {tag!r}. Expected vMAJOR.MINOR.PATCH, e.g. v0.7.0.')
+          version = tag[1:]
+          with pathlib.Path('pyproject.toml').open('rb') as f:
+              project = tomllib.load(f)['project']
+          if project['name'] != 'afperf' or project['version'] != version:
+              raise SystemExit(f'Release tag {tag} differs from package metadata: {project["name"]}=={project["version"]}')
+          print(f'Validated AFPerf release tag: {tag}')
+          PY
+
+      - name: Build and verify distributions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip build twine
+          python -m build --sdist --wheel
+          python -m twine check dist/*
+
+      - name: Validate wheel, sdist and checksums
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, os, pathlib, tarfile, zipfile
+          version = os.environ['RELEASE_TAG'][1:]
+          dist = pathlib.Path('dist')
+          wheel = dist / f'afperf-{version}-py3-none-any.whl'
+          sdist = dist / f'afperf-{version}.tar.gz'
+          for path in (wheel, sdist):
+              if not path.is_file():
+                  raise SystemExit(f'Missing expected distribution: {path}')
+          with zipfile.ZipFile(wheel) as z:
+              metadata = [n for n in z.namelist() if n.endswith('.dist-info/METADATA')]
+              if len(metadata) != 1:
+                  raise SystemExit('Wheel must contain exactly one METADATA entry')
+              info = z.read(metadata[0]).decode('utf-8')
+              if f'Name: afperf\n' not in info or f'Version: {version}\n' not in info:
+                  raise SystemExit('Wheel metadata does not match the release')
+          with tarfile.open(sdist, 'r:gz') as t:
+              if not any(n.name.endswith('/PKG-INFO') for n in t.getmembers()):
+                  raise SystemExit('Source distribution missing PKG-INFO')
+          checksums = ''.join(
+              f'{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n'
+              for path in (wheel, sdist)
+          )
+          (dist / 'SHA256SUMS.txt').write_text(checksums, encoding='ascii')
+          print('AFPerf distributions and SHA256 checksums verified:', version)
+          PY
+          (cd dist && sha256sum -c SHA256SUMS.txt)
+
+      - name: Upload verified artifacts (not a public release)
+        uses: actions/upload-artifact@v7
+        with:
+          name: afperf-validated-${{ github.ref_name }}
+          path: |
+            dist/*.whl
+            dist/*.tar.gz
+            dist/SHA256SUMS.txt
+          if-no-files-found: error
+>>>>>>> 77d3829 (fix: Python 3.10 CI compatibility and safe release validation)
